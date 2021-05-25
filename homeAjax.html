@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Home</title>
+</head>
+<body>
+
+	<form>
+		<label>Digite seu nome: </label>
+		<br><br>
+		 <input type="text" id="meu-input" />
+		<br><br>
+		
+		<label>Digite seu estado: </label>
+		<br><br>
+		<input type="text" name="estado" onchange="recebeArray(this.value)" id="estado" />
+		<br><br>
+	
+		<div>
+			<select id="campoResposta" value=0  onchange="recebeArray(this.value)"></select>
+		</div>
+	</form>
+	
+	<button onclick="mostrarValor()">Finalizar</button>
+	<br><p id="demo"></p>
+</body>
+
+<script>
+	
+	function recebeArray(str) {
+		
+		if(str.length > 0){
+
+			var xmlhttp = new XMLHttpRequest();
+			xmlhttp.onreadystatechange = function() {
+				if(this.readyState == 4 && this.status == 200){
+
+					limpaSelect();
+					var campoResposta = document.getElementById('campoResposta');
+
+					var result = JSON.parse(this.responseText);
+					console.log(result);
+					
+					for(var i = 0; i < result.estado.length; i++){
+
+						var abrOption = document.createElement("option");
+						abrOption.value = result.estado[i];
+						abrOption.innerHTML = result.estado[i];
+						campoResposta.appendChild(abrOption);
+
+					}
+				}
+			}
+
+			xmlhttp.open("GET", "http://localhost/3daw/cidadesPHP.php?estado="+str, true);
+			xmlhttp.send();
+		}
+
+
+	}
+
+	function limpaSelect(){
+		var campoResposta = document.getElementById('campoResposta');
+
+		campoResposta.parentNode.removeChild(campoResposta);
+
+		var tag = document.createElement("select");
+		tag.setAttribute("id", "campoResposta");
+		document.body.appendChild(tag);
+	}
+	
+	// Função que mostra o valor do input num alert
+	function mostrarValor() {
+		var x=document.getElementById("meu-input").value;
+		var y=document.getElementById("estado").value;
+		var z=document.getElementById("campoResposta").value;
+		var p;
+		p= "NOME: " + x + " ; Estado: " + y + " ; Cidade: " + z + ".";
+		document.getElementById("demo").innerHTML=p;
+	
+	}
+	
+</script>
+</html>
